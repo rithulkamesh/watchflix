@@ -1,12 +1,16 @@
 import os
-import database
+import logging
 from flask import Flask
 from dotenv import load_dotenv
 
-load_dotenv()
-
 app = Flask(__name__)
-conn, cur = database.init(os.getenv("DATABASE_URI"))
+
+logging.basicConfig()
+
+load_dotenv()
+import database
+logging.getLogger('sqlalchemy').setLevel(logging.ERROR)
+
 
 import routes
 
