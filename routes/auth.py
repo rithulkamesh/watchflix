@@ -66,10 +66,9 @@ def signup():
         verify_id = str(uuid4())
     verify = Verify(code=verify_id, email=body["email"])
     db.add(verify)
-    db.commit()    
+    db.commit()
 
     # Email Logic
-
     return send("Successfully Signed Up!", 200)
 # endregion
 
