@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, DateTime
 
-engine = create_engine(os.getenv('DATABASE_URI'))
+engine = create_engine(os.getenv('DATABASE_URI') + "?charset=utf8", encoding="utf8")
 Base = declarative_base()
 meta = MetaData()
 
@@ -24,6 +24,16 @@ class Reset(Base):
     __tablename__ = 'reset_sql'
     code = Column(String(200), primary_key=True)
     email = Column(String(200), nullable=False)
+
+class movies(Base):
+    __tablename__ = 'movies_sql'
+    id = Column(String(200), primary_key=True)
+    title = Column(String(200), nullable=False)
+    year = Column(String(200), nullable=False)
+    director = Column(String(200), nullable=False)
+    genre = Column(String(200), nullable=False)
+    rating = Column(String(200), nullable=False)
+    trailer = Column(String(200), nullable=False)
 
 Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)

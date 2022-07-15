@@ -7,3 +7,6 @@
 - [rithulkamesh] Login / Logout Process
 - [rithulkamesh] Email Verification Logic
 - [rithulkamesh] Login Validation
+
+## 15th July 2022
+- [rithulkamesh] Added Movies Table
