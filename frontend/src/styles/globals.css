@@ -18,3 +18,9 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.loginBackground {
+  background-image: url("http://localhost:3000/banner.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
