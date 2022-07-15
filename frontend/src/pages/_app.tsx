@@ -7,6 +7,7 @@ function MyApp({ Component, pageProps }: AppProps) {
     <>
     <Head>
       <link rel="icon" href="/logo-blue.svg" />
+      <title>Watchflix</title>
     </Head>
       <Component {...pageProps} />
     </>
