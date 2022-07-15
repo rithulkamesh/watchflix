@@ -10,3 +10,4 @@
 
 ## 15th July 2022
 - [rithulkamesh] Added Movies Table
+
