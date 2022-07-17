@@ -26,7 +26,7 @@ a {
   background-size: cover;
 }
 .loginLayer {
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(0, 0, 0, 0.55);
   position: absolute;
   top: 0;
   left: 0;

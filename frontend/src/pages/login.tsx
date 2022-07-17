@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import Head from "next/head";
+
 const Login: React.FC = () => {
   const widthAndHeight = 60;
   return (
@@ -18,7 +18,7 @@ const Login: React.FC = () => {
           </div>
           <div className="w-screen flex items-center justify-center h-screen">
             <div className="items-center justify-center">
-              <div className="bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded-lg">
+              <div className="bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded">
                 <div className="p-10">
                 <div id="Title" className="text-4xl font-bold mb-10">Sign In</div>
                 <div id="Form" className="">
@@ -27,8 +27,7 @@ const Login: React.FC = () => {
                   </form>
                 </div>
                 <p className="text-center text-slate-100 text-xs">
-                &copy;{new Date().getFullYear()} Rithul K & Apoorva YK. All
-                rights reserved.
+                Final Project | Rithul Kamesh and Apoorva YK
               </p>
                 </div>
               </div>
