@@ -5,10 +5,12 @@ from datetime import datetime
 from database import db, User, Reset, Verify
 from jwt import JWT, jwk_from_pem
 from flask import request, jsonify, Blueprint
+from flask_cors import CORS
 
 jwt = JWT()
 
 auth = Blueprint("auth", __name__)
+CORS(auth)
 
 # Region Utilities
 def send(text, status):
@@ -85,13 +87,15 @@ def login():
         return send("Invalid Email", 400)
 
     user = db.query(User).filter_by(email=body["email"]).first()
+    print(user)
+
     if not user:
         return send("Email does not exist", 400)
 
     if not bcrypt.checkpw(body["password"].encode("utf-8"), user.password.encode("utf-8")):
         return send("Invalid Password", 400)
 
-    if user is None:
+    if user == None:
         return send("Invalid Email or Password", 400)
     else:
         response = send("Successfully Logged In!", 200)
