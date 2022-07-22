@@ -8,6 +8,7 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const login = async (e: any) => {
+
     e.preventDefault();
     const emailRegex =
       /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -16,8 +17,8 @@ const Login: React.FC = () => {
       setPassword("");
       return;
     }
-    // Send request to localhost:3001/auth/login
-    const a = await fetch("http://localhost:3001/auth/login", {
+
+    await fetch("http://localhost:3001/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +28,11 @@ const Login: React.FC = () => {
         password:password,
       }),
     })
-    console.log(a)
+    .then(r => r.json())
+    .then(data => {
+      console.log(data);
+  })
+    
   };
   return (
     <div>
