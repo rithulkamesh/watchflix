@@ -5,7 +5,12 @@ from dotenv import load_dotenv
 from flask_cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/auth/*": {"origins": "*"}})
+cors = CORS(app, resource={
+    r"/*":{
+        "origins":"*"
+    }
+}, supports_credentials=True)
+
 app.config['CORS_HEADERS'] = 'Content-Type'
 
 logging.basicConfig()

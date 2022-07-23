@@ -27,10 +27,19 @@ const Login: React.FC = () => {
         email:email,
         password:password,
       }),
+      credentials: "include"
     })
     .then(r => r.json())
     .then(data => {
-      console.log(data);
+      // if response is 400
+      if (data.status_code === 400) {
+        console.log("400")
+        toast.error("Your Email or Password was not found.. Please check your details again.", { theme: "dark" });
+        setPassword("");
+        return;
+      }
+
+      console.log(data)
   })
     
   };
@@ -88,7 +97,10 @@ const Login: React.FC = () => {
                   </p>
                 </div>
               </div>
-              <ToastContainer
+            </div>
+          </div>
+        </div>
+        <ToastContainer
                 position="bottom-right"
                 autoClose={5000}
                 hideProgressBar={false}
@@ -96,9 +108,6 @@ const Login: React.FC = () => {
                 closeOnClick
                 rtl={false}
               />
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

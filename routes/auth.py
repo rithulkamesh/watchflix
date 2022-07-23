@@ -4,13 +4,11 @@ from uuid import uuid4
 from datetime import datetime
 from database import db, User, Reset, Verify
 from jwt import JWT, jwk_from_pem
-from flask import request, jsonify, Blueprint
-from flask_cors import CORS
+from flask import request, jsonify, Blueprint, Response
 
 jwt = JWT()
 
 auth = Blueprint("auth", __name__)
-CORS(auth)
 
 # Region Utilities
 def send(text, status):
@@ -18,7 +16,6 @@ def send(text, status):
         "result": text,
         "status_code": status
     })
-
 
 def check_email(email):
     regex = "([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
@@ -41,7 +38,9 @@ def signup():
     if not check_email(body["email"]):
         return send("Invalid Email", 400)
 
-    if db.query(User).filter_by(email=body["email"]).first():
+    user = db.query(User).filter_by(email=body["email"]).first()
+    print(user.email)
+    if user != None:
         return send("Email already exists", 400)
     uuid = str(uuid4())
     while True:
@@ -62,7 +61,7 @@ def signup():
     verify_id = str(uuid4())
     while True:
         if not db.execute(
-            "SELECT * FROM verify_sql WHERE id = '{}'".format(verify_id)
+            "SELECT * FROM verify_sql WHERE code = '{}'".format(verify_id)
         ).rowcount:
             break
         verify_id = str(uuid4())
