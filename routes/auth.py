@@ -203,7 +203,7 @@ def validate():
 
         response.set_cookie('watchflixlogin', '', expires=0)
         return response
-    user = db.query(User).filter_by(id=payload["id"]).first()
+    user = db.query(User).filter_by(email = payload["email"]).first()
     if not user:
         return send("Invalid Token", 403)
     return send("Valid", 200)

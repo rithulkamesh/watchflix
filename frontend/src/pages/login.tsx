@@ -18,13 +18,14 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
+  const [validated, setValidated] = useState(false);
 
   const login = (e:   FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     schema.isValid({ email, password })
     .then(async () => {
-      await LoginUser(email, password, toast, setPassword);
+      await LoginUser(email, password, toast, setPassword, setLoading);
     })
     .catch(() => {
       toast.error("Invalid email or Password", { theme: "dark" });
@@ -46,7 +47,10 @@ const Login: React.FC = () => {
   }
 
   if (loading) {
-    validate()
+    if(!validated) {
+      validate();
+      setValidated(true)
+    }
     return(
       <Loader />
     )
@@ -122,7 +126,7 @@ const Login: React.FC = () => {
 
 export default Login;
 
-async function LoginUser(email: string, password: string, toast: any, setPassword: Function) {
+async function LoginUser(email: string, password: string, toast: any, setPassword: Function, setLoading: Function) {
   await fetch("http://localhost:3001/auth/login", {
     method: "POST",
     headers: {
@@ -145,6 +149,10 @@ async function LoginUser(email: string, password: string, toast: any, setPasswor
       return;
       }    
       
-      Router.push("/")
+      setLoading(true);
+      setTimeout(() => {
+        Router.push("/");
+      }
+      , 1500);      
     });
   }
