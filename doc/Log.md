@@ -13,3 +13,6 @@
 
 ## 16th July 2022
 - Added Login Page Mockup
+
+## 26th July 2022
+- Finally Finished Login proccess with error handling
