@@ -18,7 +18,11 @@ const Home: React.FC = () => {
         } else {
           Router.push("/login");
         }
-      });
+      })
+      .catch(() => {
+        Router.push("/");
+      })
+      ;
   };
 
   if (loading) {
