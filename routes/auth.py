@@ -39,7 +39,7 @@ def signup():
         return send("Invalid Email", 400)
 
     user = db.query(User).filter_by(email=body["email"]).first()
-    print(user.email)
+
     if user != None:
         return send("Email already exists", 400)
     uuid = str(uuid4())
@@ -136,6 +136,7 @@ def verify_email(code):
         return send("Invalid Code", 400)
     else:
         user.verified = True
+        db.delete(verify)
         db.commit()
         return send("Successfully Verified!", 200)
 # endregion verify
