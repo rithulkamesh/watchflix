@@ -1,48 +1,59 @@
-import React, { useState } from "react";
+import React, { FormEvent, useState } from "react";
 import Image from "next/image";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import InputField from "../components/inputField";
+import Router from "next/router";
+import * as yup from 'yup';
+import Loader from "../components/loading";
+
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().required().min(6)
+});
+
 
 const Login: React.FC = () => {
+
   const widthAndHeight = 60;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const login = async (e: any) => {
+  const [loading, setLoading] = useState(true);
 
+  const login = (e:   FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const emailRegex =
-      /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (!emailRegex.test(email)) {
-      toast.error("Invalid Email", { theme: "dark" });
-      setPassword("");
-      return;
-    }
 
-    await fetch("http://localhost:3001/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email:email,
-        password:password,
-      }),
-      credentials: "include"
+    schema.isValid({ email, password })
+    .then(async () => {
+      await LoginUser(email, password, toast, setPassword);
     })
-    .then(r => r.json())
-    .then(data => {
-      // if response is 400
-      if (data.status_code === 400) {
-        console.log("400")
-        toast.error("Your Email or Password was not found.. Please check your details again.", { theme: "dark" });
-        setPassword("");
-        return;
-      }
+    .catch(() => {
+      toast.error("Invalid email or Password", { theme: "dark" });
+      setPassword("");
+    })
+  }
 
-      console.log(data)
-  })
-    
-  };
+  const validate = async () => {
+      fetch("http://localhost:3001/auth/validate", {method: "POST", credentials: "include"} )
+      .then(res => res.json())
+      .then(data => {
+        console.log(data)
+        if (data.status === 200) {
+          Router.push("/");
+        } else {
+          setLoading(false);
+        }
+      }
+      )  
+  }
+
+  if (loading) {
+    validate()
+    return(
+      <Loader />
+    )
+  }
+
   return (
     <div>
       <div className="h-screen w-screen loginBackground">
@@ -56,33 +67,31 @@ const Login: React.FC = () => {
               className={"px-1"}
             />
           </div>
-          <div className="w-screen flex items-center justify-center h-screen">
+          <div className="w-screen center h-screen">
             <div className="items-center justify-center">
               <div className="bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded">
                 <div className="p-10">
                   <div id="Title" className="text-4xl font-bold mb-10">
                     Sign In
                   </div>
-                  <div
-                    id="Form"
-                    className=" flex items-center justify-center flex-col"
-                  >
+                  <div id="Form" className="center flex-col">
                     <form
-                      className="flex-col flex justify-center items-center"
+                      className="flex-col center"
                       onSubmit={(e) => login(e)}
                     >
-                      <input
+                      <InputField
                         type="email"
-                        placeholder="Enter your Email"
+                        placeholder="Enter Your Email"
                         onChange={(e) => setEmail(e.target.value)}
-                        className="bg-black bg-opacity-70 rounded-sm mx-5 my-5 mb-0.5 w-80 h-12 indent-3"
+                        value={email}
+                        className="mb-0.5"
                       />
-                      <input
+
+                      <InputField
                         type="password"
-                        placeholder="Enter your password"
+                        placeholder="Enter Your Password"
                         onChange={(e) => setPassword(e.target.value)}
                         value={password}
-                        className="bg-black bg-opacity-70 rounded-sm mx-5 my-5  mt-3 w-80 h-12 indent-3"
                       />
                       <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-80 rounded-sm mb-10"
@@ -101,16 +110,43 @@ const Login: React.FC = () => {
           </div>
         </div>
         <ToastContainer
-                position="bottom-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-              />
+          position="bottom-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+        />
       </div>
     </div>
   );
 };
 
 export default Login;
+
+async function LoginUser(email: string, password: string, toast: any, setPassword: Function) {
+  await fetch("http://localhost:3001/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      email: email,
+      password: password,
+    }),
+    credentials: "include",
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      if (data.status === 400) {
+        toast.error(
+          "Your Email or Password was not found.. Please check your details again.",
+          { theme: "dark" }
+        );     
+      setPassword("")
+      return;
+      }    
+      
+      Router.push("/")
+    });
+  }
