@@ -14,7 +14,6 @@ const schema = yup.object().shape({
 
 
 const Login: React.FC = () => {
-
   const widthAndHeight = 60;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

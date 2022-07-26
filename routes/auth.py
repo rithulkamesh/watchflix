@@ -14,7 +14,7 @@ auth = Blueprint("auth", __name__)
 def send(text, status):
     return jsonify({
         "result": text,
-        "status_code": status
+        "status": status
     })
 
 def check_email(email):
@@ -193,6 +193,7 @@ def reset(token):
 def validate():
     if 'watchflixlogin' not in request.cookies:
         return send("You are not Logged in!", 403)
+    
     token = request.cookies['watchflixlogin']
     # if token does not match user details, destroy and return 403
     try:
