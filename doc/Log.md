@@ -20,3 +20,4 @@
 ## 27th July 2022
 - Added Signup
 - Added Logout
+- QOL Changes

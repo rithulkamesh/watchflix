@@ -6,6 +6,7 @@ import InputField from "../components/inputField";
 import Router from "next/router";
 import * as yup from 'yup';
 import Loader from "../components/loading";
+import Link from "next/link";
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -99,12 +100,22 @@ const Login: React.FC = () => {
                         value={password}
                       />
                       <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-80 rounded-sm mb-10"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-80 rounded-sm mb-5"
                         type="submit"
                       >
                         Submit
                       </button>
                     </form>
+                    <div className="center mb-3">
+                      <div className="text-sm text-gray-300 flex">
+                        Don't have an account?{" "}
+                        <Link href={"/signup"}>
+                          <div className="underline decoration-white ml-1">
+                            Sign Up
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                   <p className="text-center text-slate-100 text-xs">
                     Class 12 Project | Rithul Kamesh and Apoorva YK

@@ -6,6 +6,7 @@ import InputField from "../components/inputField";
 import Router from "next/router";
 import * as yup from "yup";
 import Loader from "../components/loading";
+import Link from "next/link";
 
 const schema = yup.object().shape({
   email: yup.string().email().required(),
@@ -53,30 +54,31 @@ const SignIn: React.FC = () => {
       });
   };
 
-    const validate = async () => {
-        fetch("http://localhost:3001/auth/validate", {method: "POST", credentials: "include"} )
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === 200) {
+  const validate = async () => {
+    fetch("http://localhost:3001/auth/validate", {
+      method: "POST",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === 200) {
           //   Router.push("/");
-          } else {
-            setLoading(false);
-          }
+        } else {
+          setLoading(false);
         }
-        )      .catch(() => {
-            Router.push("/signup");
-          })
-    }
+      })
+      .catch(() => {
+        Router.push("/signup");
+      });
+  };
 
-    if (loading) {
-      if(!validated) {
-        validate();
-        setValidated(true)
-      }
-      return(
-        <Loader />
-      )
+  if (loading) {
+    if (!validated) {
+      validate();
+      setValidated(true);
     }
+    return <Loader />;
+  }
 
   return (
     <div>
@@ -132,12 +134,22 @@ const SignIn: React.FC = () => {
                         value={passConf}
                       />
                       <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-80 rounded-sm mb-10"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-80 rounded-sm mb-5"
                         type="submit"
                       >
                         Submit
                       </button>
                     </form>
+                    <div className="center mb-3">
+                      <div className="text-sm text-gray-300 flex">
+                        Already have an account?{" "}
+                        <Link href={"/login"}>
+                          <div className="underline decoration-white ml-1">
+                            Login
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                   <p className="text-center text-slate-100 text-xs">
                     Class 12 Project | Rithul Kamesh and Apoorva YK
