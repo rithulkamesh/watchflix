@@ -86,7 +86,6 @@ def login():
         return send("Invalid Email", 400)
 
     user = db.query(User).filter_by(email=body["email"]).first()
-    print(user)
 
     if not user:
         return send("Email does not exist", 400)

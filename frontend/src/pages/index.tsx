@@ -30,8 +30,10 @@ const Home: React.FC = () => {
     return <Loader />;
   }
   return (
-    <div>
+    <div className="text-black">
       <Image src="/logo-blue.svg" alt="logo" width={60} height={60} />
+      <br />
+      Successfully Logged in!<br />Valid Session
     </div>
   );
 };
