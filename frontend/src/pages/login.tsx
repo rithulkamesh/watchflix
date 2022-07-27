@@ -44,6 +44,9 @@ const Login: React.FC = () => {
         }
       }
       )  
+      .catch(() => {
+        Router.push("/login");
+      })
   }
 
   if (loading) {

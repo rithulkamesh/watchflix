@@ -63,7 +63,9 @@ const SignIn: React.FC = () => {
             setLoading(false);
           }
         }
-        )
+        )      .catch(() => {
+            Router.push("/signup");
+          })
     }
 
     if (loading) {
