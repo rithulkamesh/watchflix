@@ -16,3 +16,7 @@
 
 ## 26th July 2022
 - Finally Finished Login proccess with error handling
+
+## 27th July 2022
+- Added Signup
+- Added Logout
