@@ -1,8 +1,8 @@
 import os
 import logging
 from flask import Flask
-from dotenv import load_dotenv
 from flask_cors import CORS
+from dotenv import load_dotenv
 
 app = Flask(__name__)
 cors = CORS(app, resource={
@@ -16,6 +16,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 logging.basicConfig()
 
 load_dotenv()
+
+import mail
 import database
 logging.getLogger('sqlalchemy').setLevel(logging.ERROR)
 

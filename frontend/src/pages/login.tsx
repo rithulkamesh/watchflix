@@ -161,7 +161,12 @@ async function LoginUser(email: string, password: string, toast: any, setPasswor
         );     
       setPassword("")
       return;
-      }    
+      } 
+      if (data.status === 403) {
+        toast.error("Please Verify Your Account.", {theme : "dark"})
+        setPassword("")
+        return;
+      }
       
       setLoading(true);
       setTimeout(() => {

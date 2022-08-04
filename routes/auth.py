@@ -1,4 +1,5 @@
 import re
+import mail
 import bcrypt
 from uuid import uuid4
 from datetime import datetime
@@ -68,6 +69,7 @@ def signup():
     verify = Verify(code=verify_id, email=body["email"])
     db.add(verify)
     db.commit()
+    mail.send(body["email"], verify_id)
 
     # Email Logic
     return send("Successfully Signed Up!", 200)
@@ -93,8 +95,8 @@ def login():
     if not bcrypt.checkpw(body["password"].encode("utf-8"), user.password.encode("utf-8")):
         return send("Invalid Password", 400)
 
-    if user == None:
-        return send("Invalid Email or Password", 400)
+    if db.query(Verify).filter_by(email=body["email"]).first():
+        return send("Email is not verified", 403)
     else:
         response = send("Successfully Logged In!", 200)
         # JWT signing
@@ -187,7 +189,6 @@ def reset(token):
 # endregion
 
 # Region Validate Login
-
 @auth.route("/validate", methods=["POST"])
 def validate():
     if 'watchflixlogin' not in request.cookies:
