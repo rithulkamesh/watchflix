@@ -6,6 +6,7 @@ import Image from "next/image";
 const Verify: React.FC = () => {
   const router = useRouter();
   const code = router.query.code;
+
   if (router.query.code) {
     setCookie("code", code, { path: "/verify" });
     router.push("/verify");
@@ -19,20 +20,30 @@ const Verify: React.FC = () => {
     .then(r => r.json())
     .then(data => {
       if (data.status === 400 || data.status === 200) {
-        deleteCookie("code");
+        (async () => {
+          await deleteCookie("code");
+        })()
+      }
 
-      } 
-
-      router.push("/login")
+      return router.push("/login")
     })
     ;
   }
 
+  // router.push("/login");
+  const size = 500;
+
   return (
     <div>
       <div className="h-screen w-screen loginBackground">
-        <div className="loginLayer">{code}</div>
-        <Image src={"/Mail.svg"} layout={"fill"}/>
+        <div className="loginLayer">
+          <div className="flex h-screen flex-col items-center justify-center">
+            <Image src={"/Mail.svg"} height={size} width={size} />
+            <div className="text-4xl font-bold mb-10">
+              Verifying...
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

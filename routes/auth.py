@@ -139,7 +139,20 @@ def verify_email(code):
         user.verified = True
         db.delete(verify)
         db.commit()
-        return send("Successfully Verified!", 200)  
+
+        response = send("Successfully Verified!", 200)
+        # JWT signing
+        payload = {
+            "id": user.id,
+            "email": user.email,
+            "name": user.name
+        }
+        key = None
+        with open("./keys/private.key", "rb") as f:
+            key = f.read()
+        token = jwt.encode(payload, jwk_from_pem(pem_content=key), alg="RS256")
+        response.set_cookie('watchflixlogin', token)
+        return response
 # endregion verify
 
 # Region Forgot Password - Send
