@@ -10,7 +10,7 @@ def send(email, verifyCode):
     mail = ""
     with open(r"views\verify.html") as f:
         mail=f.read()
-    mail=mail.replace(r"{{verifyCode}}", f"http://localhost:3000/verify?code={verifyCode}") 
+    mail=mail.replace(r"{{verifyLink}}", f"http://localhost:3000/verify?code={verifyCode}") 
     try:
         response = sg.client.mail.send.post(request_body={
             "personalizations": [

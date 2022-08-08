@@ -14,6 +14,7 @@ class User(Base):
     name = Column(String(200), nullable=False)
     password = Column(String(200), nullable=False)
     created_at = Column(DateTime, nullable=False)
+    verified = Column(Boolean, default=False)
 
 class Verify(Base):
     __tablename__ = 'verify_sql'

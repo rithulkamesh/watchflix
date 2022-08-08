@@ -12,6 +12,7 @@ cors = CORS(app, resource={
 }, supports_credentials=True)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['SQLALCHEMY_POOL_RECYCLE'] = 3600
 
 logging.basicConfig()
 
@@ -19,6 +20,7 @@ load_dotenv()
 
 import mail
 import database
+
 logging.getLogger('sqlalchemy').setLevel(logging.ERROR)
 
 from routes.auth import auth

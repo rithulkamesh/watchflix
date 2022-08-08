@@ -95,7 +95,7 @@ def login():
     if not bcrypt.checkpw(body["password"].encode("utf-8"), user.password.encode("utf-8")):
         return send("Invalid Password", 400)
 
-    if db.query(Verify).filter_by(email=body["email"]).first():
+    if not user.verified:
         return send("Email is not verified", 403)
     else:
         response = send("Successfully Logged In!", 200)
@@ -131,15 +131,15 @@ def logout():
 def verify_email(code):
     if 'watchflixlogin' in request.cookies:
         return send("You are already Logged in!", 403)
-    verify = db.query(Verify).filter_by(code=code).first()
-    user = db.query(User).filter_by(email=verify.email).first()
+    verify = db.query(Verify).filter_by(code=str(code)).first()
     if verify is None:
         return send("Invalid Code", 400)
     else:
+        user = db.query(User).filter_by(email=verify.email).first()
         user.verified = True
         db.delete(verify)
         db.commit()
-        return send("Successfully Verified!", 200)
+        return send("Successfully Verified!", 200)  
 # endregion verify
 
 # Region Forgot Password - Send
