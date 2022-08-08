@@ -13,12 +13,17 @@ auth = Blueprint("auth", __name__)
 
 # Region Utilities
 def send(text, status):
+    """
+    Returns a JSONified version of the text and status to send back to the user
+    """
+
     return jsonify({
         "result": text,
         "status": status
     })
 
 def check_email(email):
+    """checks if email entered is valid"""
     regex = "([A-Za-z0-9]+[.-_])*[A-Za-z0-9]+@[A-Za-z0-9-]+(\.[A-Z|a-z]{2,})+"
     if(re.search(regex, email.lower())):
         return True
@@ -54,6 +59,7 @@ def signup():
     # Hash the password with bcrypt
     hashed_password = bcrypt.hashpw(body["password"].encode("utf-8"), bcrypt.gensalt(rounds=10)).decode("utf-8")
     password = body["password"]
+    """hashes the password when user types in password column"""
     user = User(id=uuid, email=body["email"],
                 name=body["name"], password=hashed_password, created_at=datetime.now())
     db.add(user)
@@ -159,13 +165,15 @@ def verify_email(code):
 @auth.route("/forgot", methods=["POST"])
 def forgot():
     body = request.get_json()
+    """ if emial is not entered """
     if not {'email'}.issubset(body.keys()):
         return send("Insufficient arguments", 400)
-    
+    """in case email is not valid"""
     if not check_email(body["email"]):
         return send("Invalid Email", 400)
 
     user = db.query(User).filter_by(email=body["email"]).first()
+    """if email doesnt exist in the user table"""
     if not user:
         return send("Email does not exist", 400)
     else:
@@ -204,6 +212,7 @@ def reset(token):
 # Region Validate Login
 @auth.route("/validate", methods=["POST"])
 def validate():
+    """if user is not logged in """
     if 'watchflixlogin' not in request.cookies:
         return send("You are not Logged in!", 403)
     
