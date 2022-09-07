@@ -9,6 +9,13 @@ Base = declarative_base()
 meta = MetaData()
 #table for user info
 class User(Base):
+    """
+    @Class User - Stores the login item for the users of watchflix;
+
+    Requires:
+    1. Email - Email of the User
+    2. Name - The Name of the user
+    """
     __tablename__ = 'user_sql'
     id = Column(String(200), primary_key=True)
     email = Column(String(200), nullable=False, unique=True)
