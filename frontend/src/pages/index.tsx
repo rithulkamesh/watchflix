@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import Router  from "next/router";
+import { useRouter } from "next/router";
 import Loader from "../components/loading";
 
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
-
+  const router = useRouter();
   const validate = async () => {
     fetch("http://localhost:3001/auth/validate", {
       method: "POST",
@@ -16,14 +16,10 @@ const Home: React.FC = () => {
         if (data.status === 200) {
           setLoading(false);
         } else {
-          Router.push("/login");
+          router.push("/login");
         }
       })
-      .catch(() => {
-        Router.push("/");
-      })
-      ;
-  };
+      };
 
   if (loading) {
     validate();
@@ -33,7 +29,9 @@ const Home: React.FC = () => {
     <div className="text-black">
       <Image src="/logo-blue.svg" alt="logo" width={60} height={60} />
       <br />
-      Successfully Logged in!<br />Valid Session
+      Successfully Logged in!
+      <br />
+      Valid Session
     </div>
   );
 };

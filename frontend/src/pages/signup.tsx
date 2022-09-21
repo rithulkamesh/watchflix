@@ -12,13 +12,14 @@ const schema = yup.object().shape({
   email: yup.string().email().required(),
   password: yup.string().required().min(6),
   name: yup.string().required().min(3),
+// check if confirm password is equal to password
   confirmPassword: yup
-    .string()
+    .string() 
+    .required()
     .oneOf([yup.ref("password"), null], "Passwords must match")
-    .required(),
 });
 
-const SignIn: React.FC = () => {
+const Signup: React.FC = () => {
   const widthAndHeight = 60;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -31,7 +32,12 @@ const SignIn: React.FC = () => {
     e.preventDefault();
 
     schema
-      .isValid({ email, password })
+      .isValid({
+        email: email,
+        password: password,
+        name: name,
+        confirmPassword: passConf,
+      })
       .then(async () => {
         await SignupUser(
           email,
@@ -144,9 +150,9 @@ const SignIn: React.FC = () => {
                       <div className="text-sm text-gray-300 flex">
                         Already have an account?{" "}
                         <Link href={"/login"}>
-                          <div className="underline decoration-white ml-1">
+                          <a className="underline decoration-white ml-1">
                             Login
-                          </div>
+                          </a>
                         </Link>
                       </div>
                     </div>
@@ -172,7 +178,7 @@ const SignIn: React.FC = () => {
   );
 };
 
-export default SignIn;
+export default Signup;
 
 async function SignupUser(
   email: string,

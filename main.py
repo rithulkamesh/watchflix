@@ -2,6 +2,7 @@ import os
 import logging
 from flask import Flask
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 
 app = Flask(__name__)
@@ -12,11 +13,13 @@ cors = CORS(app, resource={
 }, supports_credentials=True)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['SQLALCHEMY_POOL_RECYCLE'] = 3600
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 logging.basicConfig()
 
 load_dotenv()
+app.config ['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
+
 
 import mail
 import database

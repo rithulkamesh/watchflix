@@ -1,50 +1,35 @@
-#database
-import os
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, DateTime
+# #database
+# import os
+# from sqlalchemy.orm import sessionmaker
+# from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, DateTime
+from flask_sqlalchemy import SQLAlchemy
+from __main__ import app
 
-engine = create_engine(os.getenv('DATABASE_URI') + "?charset=utf8", encoding="utf8")
-Base = declarative_base()
-meta = MetaData()
-#table for user info
-class User(Base):
-    """
-    @Class User - Stores the login item for the users of watchflix;
+db = SQLAlchemy(app)
+db.init_app(app)
 
-    Requires:
-    1. Email - Email of the User
-    2. Name - The Name of the user
-    """
-    __tablename__ = 'user_sql'
-    id = Column(String(200), primary_key=True)
-    email = Column(String(200), nullable=False, unique=True)
-    name = Column(String(200), nullable=False)
-    password = Column(String(200), nullable=False)
-    created_at = Column(DateTime, nullable=False)
-    verified = Column(Boolean, default=False)
+class User(db.Model):
+    id = db.Column(db.String(200), primary_key=True)
+    email = db.Column(db.String(200), nullable=False, unique=True)
+    name = db.Column(db.String(200), nullable=False)
+    password = db.Column(db.String(200), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False)
+    verified = db.Column(db.Boolean, default=False)
+    isAdmin = db.Column(db.Boolean, default=False)
+
 #verification table
-class Verify(Base):
-    __tablename__ = 'verify_sql'
-    code = Column(String(200), primary_key=True)
-    email = Column(String(200), nullable=False)
+class Verify(db.Model):
+    code = db.Column(db.String(200), primary_key=True)
+    email = db.Column(db.String(200), nullable=False)
 
-class Reset(Base):
-    __tablename__ = 'reset_sql'
-    code = Column(String(200), primary_key=True)
-    email = Column(String(200), nullable=False)
+class Reset(db.Model):
+    code = db.Column(db.String(200), primary_key=True)
+    email = db.Column(db.String(200), nullable=False)
 
-#table for movies
-class movies(Base):
-    __tablename__ = 'movies_sql'
-    id = Column(String(200), primary_key=True)
-    title = Column(String(200), nullable=False)
-    year = Column(String(200), nullable=False)
-    director = Column(String(200), nullable=False)
-    genre = Column(String(200), nullable=False)
-    rating = Column(String(200), nullable=False)
-    trailer = Column(String(200), nullable=False)
+db.create_all()
 
-Base.metadata.create_all(engine)
-Session = sessionmaker(bind=engine)
-db = Session()
+# Base.metadata.create_all(engine)
+# Session = sessionmaker()
+# Session.configure(bind=engine)
+# db = Session()

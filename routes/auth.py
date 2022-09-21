@@ -1,6 +1,7 @@
 import re
 import mail
 import bcrypt
+import os
 from uuid import uuid4
 from datetime import datetime
 from database import db, User, Reset, Verify
@@ -29,6 +30,9 @@ def check_email(email):
         return True
     else:
         return False
+
+def hashpw(pw):
+    return bcrypt.hashpw(pw.encode("utf-8"), bcrypt.gensalt(rounds=10)).decode("utf-8")
 #endregion
 
 # Region signup
@@ -37,47 +41,47 @@ def check_email(email):
 def signup():
     if 'watchflixlogin' in request.cookies:
         return send("You are already Logged in!", 403)
+    
     body = request.get_json()
+    
     if not {'email', 'password', 'name'}.issubset(body.keys()):
         return send("Insufficient arguments", 400)
 
     if not check_email(body["email"]):
         return send("Invalid Email", 400)
 
-    user = db.query(User).filter_by(email=body["email"]).first()
+    user = User.query.filter_by(email=body["email"]).first()
 
     if user != None:
         return send("Email already exists", 400)
+    
     uuid = str(uuid4())
+
     while True:
-        if not db.execute(
-            "SELECT * FROM user_sql WHERE id = '{}'".format(uuid)
-        ).rowcount:
+        if User.query.get(uuid) == None:
             break
         uuid = str(uuid4())
 
     # Hash the password with bcrypt
-    hashed_password = bcrypt.hashpw(body["password"].encode("utf-8"), bcrypt.gensalt(rounds=10)).decode("utf-8")
-    password = body["password"]
-    """hashes the password when user types in password column"""
+    hashed_password = hashpw(body["password"])
     user = User(id=uuid, email=body["email"],
                 name=body["name"], password=hashed_password, created_at=datetime.now())
-    db.add(user)
-    db.commit()
+    db.session.add(user)
+    db.session.commit()
+    
 
     verify_id = str(uuid4())
     while True:
-        if not db.execute(
-            "SELECT * FROM verify_sql WHERE code = '{}'".format(verify_id)
-        ).rowcount:
+        if Verify.query.get(verify_id) == None:
             break
         verify_id = str(uuid4())
+    
     verify = Verify(code=verify_id, email=body["email"])
-    db.add(verify)
-    db.commit()
-    mail.send(body["email"], verify_id)
+    db.session.add(verify)
+    db.session.commit()
 
-    # Email Logic
+    mail.send_verify(body["email"], body["name"].split()[0],verify_id)
+
     return send("Successfully Signed Up!", 200)
 # endregion
 
@@ -93,8 +97,7 @@ def login():
     if not check_email(body["email"]):
         return send("Invalid Email", 400)
 
-    user = db.query(User).filter_by(email=body["email"]).first()
-
+    user = User.query.filter(User.email == body["email"]).first()
     if not user:
         return send("Email does not exist", 400)
 
@@ -103,21 +106,21 @@ def login():
 
     if not user.verified:
         return send("Email is not verified", 403)
-    else:
-        response = send("Successfully Logged In!", 200)
-        # JWT signing
-        payload = {
-            "id": user.id,
-            "email": user.email,
-            "name": user.name
-        }
-        key = None
-        with open("./keys/private.key", "rb") as f:
-            key = f.read()
-        token = jwt.encode(payload, jwk_from_pem(pem_content=key), alg="RS256")
-        response.set_cookie('watchflixlogin', token)
-
-        return response
+    
+    response = send("Successfully Logged In!", 200)
+    # JWT signing
+    payload = {
+        "id": user.id,
+        "email": user.email,
+        "name": user.name
+    }
+    key = None
+    with open(os.path.join(os.getcwd(), "keys", "private.key"), "rb") as f:
+        key = f.read()
+    
+    token = jwt.encode(payload, jwk_from_pem(pem_content=key), alg="RS256")
+    response.set_cookie('watchflixlogin', token)
+    return response
 
 #endregion
 
@@ -137,14 +140,14 @@ def logout():
 def verify_email(code):
     if 'watchflixlogin' in request.cookies:
         return send("You are already Logged in!", 403)
-    verify = db.query(Verify).filter_by(code=str(code)).first()
+    verify = Verify.query.get(code)
     if verify is None:
         return send("Invalid Code", 400)
     else:
-        user = db.query(User).filter_by(email=verify.email).first()
+        user = User.query.filter(User.email==verify.email).first()
         user.verified = True
-        db.delete(verify)
-        db.commit()
+        db.session.delete(verify)
+        db.session.commit()
 
         response = send("Successfully Verified!", 200)
         # JWT signing
@@ -154,7 +157,7 @@ def verify_email(code):
             "name": user.name
         }
         key = None
-        with open("./keys/private.key", "rb") as f:
+        with open(os.path.join(os.getcwd(), "keys", "private.key"), "rb") as f:
             key = f.read()
         token = jwt.encode(payload, jwk_from_pem(pem_content=key), alg="RS256")
         response.set_cookie('watchflixlogin', token)
@@ -165,28 +168,29 @@ def verify_email(code):
 @auth.route("/forgot", methods=["POST"])
 def forgot():
     body = request.get_json()
-    """ if emial is not entered """
+    """ if email is not entered """
     if not {'email'}.issubset(body.keys()):
         return send("Insufficient arguments", 400)
     """in case email is not valid"""
     if not check_email(body["email"]):
         return send("Invalid Email", 400)
 
-    user = db.query(User).filter_by(email=body["email"]).first()
+    user = User.query.filer(User.email == body["email"]).first()
     """if email doesnt exist in the user table"""
     if not user:
         return send("Email does not exist", 400)
     else:
         forgot_id = str(uuid4())
         while True:
-            if not db.query(Reset).filter_by(code=forgot_id).first():
+            if not Reset.query.filter(Reset.code == forgot_id).first():
                 break
             forgot_id = str(uuid4())
         forgot = Reset(code=forgot_id, email=body["email"])
-        db.add(forgot)
-        db.commit()
+        db.session.add(forgot)
+        db.session.commit()
 
         # Email Logic
+        mail.send_reset(body["email"], user.name.split()[0], forgot_id)
 
         return send("Successfully Sent!", 200)
 # endregion
@@ -197,14 +201,16 @@ def reset(token):
     body = request.get_json()
     if not {'newpassword'}.issubset(body.keys()):
         return send("Insufficient arguments", 400)
-    forgot = db.query(Reset).filter_by(code=token).first()
+    forgot = Reset.query.filter(Reset.code == token).first()
     if not forgot:
         return send("Invalid Code", 400)
-    user = db.query(User).filter_by(email=forgot.email).first()
+    user = User.query.filer(User.email == forgot.email).first()
     if not user:
+        db.session.delete(forgot)
+        db.session.commit()
         return send("Email does not exist", 400)
     else:
-        user.password = bcrypt.hashpw(body["newpassword"].encode("utf-8"), bcrypt.gensalt(rounds=10)).decode("utf-8")
+        user.password = hashpw(body["newpassword"])
         db.commit()
         return send("Successfully Reset!", 200)
 # endregion
@@ -225,13 +231,12 @@ def validate():
 
         response.set_cookie('watchflixlogin', '', expires=0)
         return response
-    try:
-        user = db.query(User).filter_by(email = payload["email"]).first()
-    except:
-        db.rollback()
-        response = send("Something went wrong", 500)
+    
+    user =  User.query.filter_by(id=payload["id"]).first()
 
     if not user:
-        return send("Invalid Token", 403)
+        respnse = send("Invalid Token", 403)
+        respnse.set_cookie('watchflixlogin', '', expires=0)
+        return respnse
     return send("Valid", 200)
 # endregion

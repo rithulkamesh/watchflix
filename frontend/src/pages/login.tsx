@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import InputField from "../components/inputField";
-import Router from "next/router";
+import {NextRouter, useRouter} from "next/router";
 import * as yup from 'yup';
 import Loader from "../components/loading";
 import Link from "next/link";
@@ -20,13 +20,14 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [validated, setValidated] = useState(false);
+  const router = useRouter();
 
   const login = (e:   FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     schema.isValid({ email, password })
     .then(async () => {
-      await LoginUser(email, password, toast, setPassword, setLoading);
+      await LoginUser(email, password, toast, setPassword, setLoading, router);
     })
     .catch(() => {
       toast.error("Invalid email or Password", { theme: "dark" });
@@ -39,14 +40,14 @@ const Login: React.FC = () => {
       .then(res => res.json())
       .then(data => {
         if (data.status === 200) {
-          Router.push("/");
+          router.push("/");
         } else {
           setLoading(false);
         }
       }
       )  
       .catch(() => {
-        Router.push("/login");
+        router.push("/login");
       })
   }
 
@@ -110,9 +111,9 @@ const Login: React.FC = () => {
                       <div className="text-sm text-gray-300 flex">
                         Don't have an account?{" "}
                         <Link href={"/signup"}>
-                          <div className="underline decoration-white ml-1">
+                          <a className="underline decoration-white ml-1">
                             Sign Up
-                          </div>
+                          </a>
                         </Link>
                       </div>
                     </div>
@@ -140,7 +141,7 @@ const Login: React.FC = () => {
 
 export default Login;
 
-async function LoginUser(email: string, password: string, toast: any, setPassword: Function, setLoading: Function) {
+async function LoginUser(email: string, password: string, toast: any, setPassword: Function, setLoading: Function, router: NextRouter) {
   await fetch("http://localhost:3001/auth/login", {
     method: "POST",
     headers: {
@@ -170,7 +171,7 @@ async function LoginUser(email: string, password: string, toast: any, setPasswor
       
       setLoading(true);
       setTimeout(() => {
-        Router.push("/");
+        router.push("/");
       }
       , 1500);      
     });

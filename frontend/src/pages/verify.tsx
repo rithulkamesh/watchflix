@@ -25,7 +25,7 @@ const Verify: React.FC = () => {
         })()
       }
 
-      return router.push("/login")
+      return router.push("/")
     })
     ;
   }
