@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/router";
 import Loader from "../components/loading";
 import "../styles/index.module.css";
@@ -29,6 +28,11 @@ const Home: React.FC = () => {
   return (
     <div className="h-screen w-screen flex">
       <SideBar />
+      <div className="b-cont w-screen h-screen bg-gray-700 ">
+        <div className="ml-24 h-screen">
+            <div className="p-5">hello</div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -5,15 +5,13 @@ import { FiLogOut, FiHome } from "react-icons/fi";
 
 const SideBar: React.FC = () => {
   return (
-    <div className="fixed top-0 left-0 h-screen w-20 flex flex-col bg-gray-900 text-white shadow-lg justify-center">
-      {/* watchflix logo */}
-
-      <div className="flex-wrap ">
-        <SideBarIcon icon={<FiHome size="35" />} tooltip={"Home"}/>
-        <SideBarIcon icon={<FaTv size="35" />}  tooltip={"Watch"}/>
+    <div className="fixed top-0 left-0 h-screen w-24 flex flex-col bg-gray-900 text-white shadow-lg justify-center">
+      <div>
+        <SideBarIcon icon={<FiHome size="35" />} tooltip={"Home"} />
+        <SideBarIcon icon={<FaTv size="35" />} tooltip={"Watch"} />
         <a href="/logout">
-        <SideBarIcon icon={<FiLogOut size="35" />} tooltip={"Logout"}/>
-          </a>
+          <SideBarIcon icon={<FiLogOut size="35" />} tooltip={"Logout"} />
+        </a>
       </div>
     </div>
   );
