@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import Loader from "../components/loading";
-
+import "../styles/index.module.css";
+import SideBar from "../components/sidebar";
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -18,20 +19,16 @@ const Home: React.FC = () => {
         } else {
           router.push("/login");
         }
-      })
-      };
+      });
+  };
 
   if (loading) {
     validate();
     return <Loader />;
   }
   return (
-    <div className="text-black">
-      <Image src="/logo-blue.svg" alt="logo" width={60} height={60} />
-      <br />
-      Successfully Logged in!
-      <br />
-      Valid Session
+    <div className="h-screen w-screen flex">
+      <SideBar />
     </div>
   );
 };

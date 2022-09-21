@@ -68,7 +68,7 @@ const Signup: React.FC = () => {
       .then((res) => res.json())
       .then((data) => {
         if (data.status === 200) {
-          //   Router.push("/");
+            Router.push("/");
         } else {
           setLoading(false);
         }
