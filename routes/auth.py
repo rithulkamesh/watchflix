@@ -6,7 +6,7 @@ from uuid import uuid4
 from datetime import datetime
 from database import db, User, Reset, Verify
 from jwt import JWT, jwk_from_pem
-from flask import request, jsonify, Blueprint, Response
+from flask import request, jsonify, Blueprint, Response,json
 
 jwt = JWT()
 
@@ -240,3 +240,28 @@ def validate():
         return respnse
     return send("Valid", 200)
 # endregion
+
+@auth.route('/user', methods=['GET'])
+def get_user():
+    if 'watchflixlogin' not in request.cookies:
+        return send("You are not Logged in!", 403)
+
+    token = request.cookies['watchflixlogin']
+    try:
+        payload = jwt.decode(token, do_verify=False)
+        
+    except:
+        response = send("Invalid Token", 403)
+        response.set_cookie('watchflixlogin', '', expires=0)
+        return response
+    
+
+    user =  User.query.with_entities(User.name, User.email, User.id, User.isAdmin).filter_by(id=payload["id"]).first()
+
+    response = jsonify({
+        "user" : json.dumps(dict(user)),
+        "status" : 200,
+        "message" : "Success"
+    })
+
+    return response

@@ -45,7 +45,6 @@ const Home: React.FC = () => {
       <SideBar />
       <div className="b-cont w-screen h-screen bg-gray-700 ">
         <div className="ml-24 h-screen">
-          {/*  Welcome Message */}
             <div className="pt-[3em] pl-[1em] text-[100px] font-black">Welcome, {user}!</div>
             <div className="p-5 pl-[3em] text-[35px] font-light">{greetings[Math.floor(Math.random() * greetings.length)]}</div>
         </div>
