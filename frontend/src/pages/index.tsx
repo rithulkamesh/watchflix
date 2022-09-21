@@ -6,6 +6,7 @@ import SideBar from "../components/sidebar";
 const Home: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState("Rithul");
+  const greetings = ["How are you doing today?",  "Pick something to watch...", "Are you feeling lucky?", "Dazzling categories..."]
   const router = useRouter();
   const validate = async () => {
 
@@ -46,7 +47,7 @@ const Home: React.FC = () => {
         <div className="ml-24 h-screen">
           {/*  Welcome Message */}
             <div className="pt-[3em] pl-[1em] text-[100px] font-black">Welcome, {user}!</div>
-            <div className="p-5 pl-[3em] text-[35px] font-light">How are you doing today?</div>
+            <div className="p-5 pl-[3em] text-[35px] font-light">{greetings[Math.floor(Math.random() * greetings.length)]}</div>
         </div>
       </div>
     </div>
