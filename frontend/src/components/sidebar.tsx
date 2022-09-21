@@ -1,4 +1,3 @@
-import Link from "next/link";
 import React from "react";
 import { FaTv } from "react-icons/fa";
 import { FiLogOut, FiHome } from "react-icons/fi";
