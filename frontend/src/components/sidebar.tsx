@@ -19,9 +19,10 @@ const SideBar: React.FC = () => {
 const SideBarIcon: React.FC<SideBarIconProps> = ({
   icon,
   tooltip = "Tooltip",
+  main=false
 }: SideBarIconProps) => {
   return (
-    <div className="sidebar-icon group">
+    <div className={`sidebar-icon  group`}>
       {icon}
       <span className="sidebar-tooltip group-hover:scale-100">{tooltip}</span>
     </div>
@@ -31,5 +32,6 @@ const SideBarIcon: React.FC<SideBarIconProps> = ({
 interface SideBarIconProps {
   icon: React.ReactNode;
   tooltip: string;
+  main?: boolean;
 }
-export default SideBar;
+export {SideBar, SideBarIcon};

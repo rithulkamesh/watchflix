@@ -1,8 +1,3 @@
-# #database
-# import os
-# from sqlalchemy.orm import sessionmaker
-# from sqlalchemy.ext.declarative import declarative_base
-# from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Boolean, DateTime
 from flask_sqlalchemy import SQLAlchemy
 from __main__ import app
 
@@ -23,13 +18,4 @@ class Verify(db.Model):
     code = db.Column(db.String(200), primary_key=True)
     email = db.Column(db.String(200), nullable=False)
 
-class Reset(db.Model):
-    code = db.Column(db.String(200), primary_key=True)
-    email = db.Column(db.String(200), nullable=False)
-
 db.create_all()
-
-# Base.metadata.create_all(engine)
-# Session = sessionmaker()
-# Session.configure(bind=engine)
-# db = Session()

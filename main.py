@@ -20,6 +20,8 @@ logging.basicConfig()
 load_dotenv()
 app.config ['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
 
+with open("reset.bin", "wb") as f:
+    print("CREATED FILE")
 
 import mail
 import database

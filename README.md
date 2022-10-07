@@ -20,3 +20,4 @@ School project lmao
 - [ ] Admin panel to add shows
 - [ ] Sending and resetting password from frontend
 - [ ] Cleanup and Refactors
+- [ ] Animations

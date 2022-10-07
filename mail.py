@@ -29,3 +29,10 @@ def send_forgot(email, name, resetCode):
     content = Content("text/html", mail)
     mail = Mail(from_email, to_email, subject, content)
     response = sg.client.mail.send.post(request_body=mail.get())
+
+
+movies = {
+    "comedy": {
+        
+    }
+}

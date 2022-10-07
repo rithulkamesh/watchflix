@@ -260,6 +260,7 @@ def get_user():
 
     response = jsonify({
         "user" : json.dumps(dict(user)),
+        "isAdmin": user.isAdmin,
         "status" : 200,
         "message" : "Success"
     })
