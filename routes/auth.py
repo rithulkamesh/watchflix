@@ -1,16 +1,53 @@
-import re
+import re,csv
 import mail
 import bcrypt
 import os
 from uuid import uuid4
 from datetime import datetime
-from database import db, User, Reset, Verify
+from database import db, User, Verify
 from jwt import JWT, jwk_from_pem
 from flask import request, jsonify, Blueprint, Response,json
 
 jwt = JWT()
 
 auth = Blueprint("auth", __name__)
+
+def insert_reset(email):
+    l=[]
+    with open('reset.csv','a+',newline='') as f:
+        l.append(email)
+        s=uuid4()
+        l.append(s)
+        w=csv.writer(f)
+        w.writerow(l)
+    return s
+
+def exists_in_reset(token):
+    with open('reset.csv','r',newline='') as f:
+        r=csv.reader(f)
+        for i in r:
+            if i[1]==token:
+                return i
+        return None
+
+def delete_reset(email):
+    with open('reset.csv','a+',newline='') as f:
+        with open('temporary.csv','r+',newline='') as t:
+            w=csv.writer(f)
+            r=csv.reader(f)
+            found=0
+            for i in r:
+                if i[0]==email:
+                    found=1
+                else:
+                    w.writerow(i)
+    if found==1:
+        os.remove('reset.csv')
+        os.rename('temporary.csv','reset.csv')
+    else:
+        print('record not found')
+
+
 
 # Region Utilities
 def send(text, status):
@@ -175,22 +212,13 @@ def forgot():
     if not check_email(body["email"]):
         return send("Invalid Email", 400)
 
-    user = User.query.filer(User.email == body["email"]).first()
+    user = User.query.filter(User.email == body["email"]).first()
     """if email doesnt exist in the user table"""
     if not user:
         return send("Email does not exist", 400)
     else:
-        forgot_id = str(uuid4())
-        while True:
-            if not Reset.query.filter(Reset.code == forgot_id).first():
-                break
-            forgot_id = str(uuid4())
-        forgot = Reset(code=forgot_id, email=body["email"])
-        db.session.add(forgot)
-        db.session.commit()
-
-        # Email Logic
-        mail.send_reset(body["email"], user.name.split()[0], forgot_id)
+        forgot_id = insert_reset(body["email"])
+        # mail.send_reset(body["email"], user.name.split()[0], forgot_id)
 
         return send("Successfully Sent!", 200)
 # endregion
@@ -201,17 +229,15 @@ def reset(token):
     body = request.get_json()
     if not {'newpassword'}.issubset(body.keys()):
         return send("Insufficient arguments", 400)
-    forgot = Reset.query.filter(Reset.code == token).first()
+    forgot = exists_in_reset(token)
     if not forgot:
         return send("Invalid Code", 400)
-    user = User.query.filer(User.email == forgot.email).first()
+    user = User.query.filter(User.email == forgot[0]).first()
     if not user:
-        db.session.delete(forgot)
-        db.session.commit()
         return send("Email does not exist", 400)
     else:
         user.password = hashpw(body["newpassword"])
-        db.commit()
+        db.session.commit()
         return send("Successfully Reset!", 200)
 # endregion
 
@@ -241,6 +267,7 @@ def validate():
     return send("Valid", 200)
 # endregion
 
+# Region getUser
 @auth.route('/user', methods=['GET'])
 def get_user():
     if 'watchflixlogin' not in request.cookies:
@@ -266,3 +293,5 @@ def get_user():
     })
 
     return response
+
+# endregion

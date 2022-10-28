@@ -1,4 +1,4 @@
-import os
+import os, csv
 import logging
 from flask import Flask
 from flask_cors import CORS
@@ -20,13 +20,17 @@ logging.basicConfig()
 load_dotenv()
 app.config ['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URI")
 
-with open("reset.bin", "wb") as f:
-    print("CREATED FILE")
-
 import mail
 import database
 
 logging.getLogger('sqlalchemy').setLevel(logging.ERROR)
+
+if not os._exists("reset.csv"):
+    with open('reset.csv','w+',newline='') as f:
+        l=['Email','UUID']
+        w=csv.writer(f)
+        w.writerow(l)
+
 
 from routes.auth import auth
 from routes.movies import movie
