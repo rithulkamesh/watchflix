@@ -31,7 +31,6 @@ if not os._exists("reset.csv"):
         w=csv.writer(f)
         w.writerow(l)
 
-
 from routes.auth import auth
 from routes.movies import movie
 

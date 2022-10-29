@@ -18,4 +18,10 @@ class Verify(db.Model):
     code = db.Column(db.String(200), primary_key=True)
     email = db.Column(db.String(200), nullable=False)
 
+class Movie(db.Model):
+    id = db.Column(db.String(200), primary_key=True)
+    name = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text(), nullable=False)
+    trailer = db.Column(db.String(200), nullable=False)
+
 db.create_all()
