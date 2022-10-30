@@ -53,11 +53,13 @@ const Home: React.FC = () => {
       <SideBar />
       <div className="b-cont w-screen h-screen bg-gray-700 ">
         {isAdmin && (
-          <div className="fixed h-20 w-screen flex items-center justify-end pr-12">
+          <a href="/admin">
+            <div className="fixed h-20 w-screen flex items-center justify-end pr-12">
             <div className={`sidebar-icon-main group`}>
               <BsGear size="35" />
             </div>
           </div>
+          </a>
         )}
         <div className="ml-24 h-screen">
           <div className="pt-[1em] pl-[1em] text-[100px] font-black">

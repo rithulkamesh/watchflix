@@ -6,8 +6,9 @@ const SideBar: React.FC = () => {
   return (
     <div className="fixed top-0 left-0 h-screen w-24 flex flex-col bg-gray-900 text-white shadow-lg justify-center">
       <div>
-        <SideBarIcon icon={<FiHome size="35" />} tooltip={"Home"} />
-        <SideBarIcon icon={<FaTv size="35" />} tooltip={"Watch"} />
+        <a href="/">
+          <SideBarIcon icon={<FiHome size="35" />} tooltip={"Home"} />
+        </a>
         <a href="/logout">
           <SideBarIcon icon={<FiLogOut size="35" />} tooltip={"Logout"} />
         </a>
@@ -19,7 +20,7 @@ const SideBar: React.FC = () => {
 const SideBarIcon: React.FC<SideBarIconProps> = ({
   icon,
   tooltip = "Tooltip",
-  main=false
+  main = false,
 }: SideBarIconProps) => {
   return (
     <div className={`sidebar-icon  group`}>
@@ -34,4 +35,4 @@ interface SideBarIconProps {
   tooltip: string;
   main?: boolean;
 }
-export {SideBar, SideBarIcon};
+export { SideBar, SideBarIcon };
