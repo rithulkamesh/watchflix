@@ -5,7 +5,7 @@ import '../styles/index.module.css';
 import MovieCard from '../components/movieCard';
 
 import HomeLayout from '../layouts/home';
-import { validateLogin } from '../utils/fetch';
+import { fetchFromAPI, validateLogin } from '../utils/fetch';
 const Home: React.FC = () => {
 	const [loading, setLoading] = useState(true);
 	const [user, setUser] = useState('Rithul');
@@ -23,16 +23,12 @@ const Home: React.FC = () => {
 			router.push('/login');
 		})
 
-		fetch('http://localhost:3001/auth/user', {
-			method: 'GET',
-			credentials: 'include'
+		fetchFromAPI("/auth/user", "GET")
+		.then((data) => {
+			if (data.status === 200) {
+				setUser(JSON.parse(data.user).name.split(' ')[0]);
+			}
 		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					setUser(JSON.parse(data.user).name.split(' ')[0]);
-				}
-			});
 	};
 
 	if (loading) {
