@@ -4,78 +4,78 @@
 
 html,
 body {
-  color:#fff;
-  padding: 0;
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+	color: #fff;
+	padding: 0;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+		Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+	color: inherit;
+	text-decoration: none;
 }
 
 * {
-  box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .loginBackground {
-  background-image: url("http://localhost:3000/banner.jpg");
-  background-repeat: no-repeat;
-  background-size: cover;
+	background-image: url('http://localhost:3000/banner.jpg');
+	background-repeat: no-repeat;
+	background-size: cover;
 }
 
 .loginLayer {
-  background-color: rgba(0, 0, 0, 0.55);
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  backdrop-filter: blur(8px);
+	background-color: rgba(0, 0, 0, 0.55);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	backdrop-filter: blur(8px);
 }
 .center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .lds-dual-ring {
-  display: inline-block;
-  width: 80px;
-  height: 80px;
+	display: inline-block;
+	width: 80px;
+	height: 80px;
 }
 .lds-dual-ring:after {
-  content: " ";
-  display: block;
-  width: 64px;
-  height: 64px;
-  margin: 8px;
-  border-radius: 50%;
-  border: 6px solid rgb(59 130 246);
-  border-color: rgb(59 130 246) transparent rgb(59 130 246) transparent;
-  animation: lds-dual-ring 1.2s linear infinite;
+	content: ' ';
+	display: block;
+	width: 64px;
+	height: 64px;
+	margin: 8px;
+	border-radius: 50%;
+	border: 6px solid rgb(59 130 246);
+	border-color: rgb(59 130 246) transparent rgb(59 130 246) transparent;
+	animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 @layer components {
-  .sidebar-icon {
-    @apply relative flex items-center justify-center h-16 w-16 mx-auto my-2 bg-gray-800 text-blue-500 hover:bg-blue-600 hover:text-slate-200
+	.sidebar-icon {
+		@apply relative flex items-center justify-center h-16 w-16 mx-auto my-2 bg-gray-800 text-blue-500 hover:bg-blue-600 hover:text-slate-200
     rounded-3xl hover:rounded-xl transition-all duration-150 ease-linear cursor-pointer;
-  }
-  .sidebar-icon-main {
-    @apply fixed flex items-center justify-center h-16 w-16 mx-auto my-2 bg-gray-800 text-blue-500 hover:bg-blue-600 hover:text-slate-200
+	}
+	.sidebar-icon-main {
+		@apply fixed flex items-center justify-center h-16 w-16 mx-auto my-2 bg-gray-800 text-blue-500 hover:bg-blue-600 hover:text-slate-200
     rounded-3xl hover:rounded-xl transition-all duration-150 ease-linear cursor-pointer;
-  }
-  .sidebar-tooltip {
-    @apply absolute w-auto p-4 m-8 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left;
-  }
+	}
+	.sidebar-tooltip {
+		@apply absolute w-auto p-4 m-8 min-w-max left-14 rounded-md shadow-md text-white bg-gray-900 text-xs font-bold transition-all duration-100 scale-0 origin-left;
+	}
 }
