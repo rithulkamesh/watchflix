@@ -1,12 +1,13 @@
 import React, { FormEvent, useState } from 'react';
 import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import InputField from '../components/inputField';
 import { NextRouter, useRouter } from 'next/router';
 import * as yup from 'yup';
 import Loader from '../components/loading';
 import Link from 'next/link';
+import AuthLayout from '../layouts/auth';
+import AuthForm from '../components/authForm';
 
 const schema = yup.object().shape({
 	email: yup.string().email().required(),
@@ -14,7 +15,6 @@ const schema = yup.object().shape({
 });
 
 const Login: React.FC = () => {
-	const widthAndHeight = 60;
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [loading, setLoading] = useState(true);
@@ -69,88 +69,46 @@ const Login: React.FC = () => {
 	}
 
 	return (
-		<div>
-			<div className="h-screen w-screen loginBackground">
-				<div className="loginLayer">
-					<div className="fixed px-20 py-5">
-						<Image
-							src={'/logo-blue.svg'}
-							alt={'Logo'}
-							width={widthAndHeight}
-							height={widthAndHeight}
-							className={'px-1'}
-						/>
-					</div>
-					<div className="w-screen center h-screen">
-						<div className="items-center justify-center">
-							<div className="bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-10 rounded">
-								<div className="p-10">
-									<div
-										id="Title"
-										className="text-4xl font-bold mb-10"
-									>
-										Sign In
-									</div>
-									<div id="Form" className="center flex-col">
-										<form
-											className="flex-col center"
-											onSubmit={(e) => login(e)}
-										>
-											<InputField
-												type="email"
-												placeholder="Enter Your Email"
-												onChange={(e) =>
-													setEmail(e.target.value)
-												}
-												value={email}
-												className="mb-0.5"
-											/>
-
-											<InputField
-												type="password"
-												placeholder="Enter Your Password"
-												onChange={(e) =>
-													setPassword(e.target.value)
-												}
-												value={password}
-											/>
-											<button
-												className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-80 rounded-sm mb-5"
-												type="submit"
-											>
-												Submit
-											</button>
-										</form>
-										<div className="center mb-3">
-											<div className="text-sm text-gray-300 flex">
-												Don't have an account?{' '}
-												<Link href={'/signup'}>
-													<a className="underline decoration-white ml-1">
-														Sign Up
-													</a>
-												</Link>
-											</div>
-										</div>
-									</div>
-									<p className="text-center text-slate-100 text-xs">
-										Class 12 Project | Rithul Kamesh and
-										Apoorva YK
-									</p>
-								</div>
+		<AuthLayout title="Login">
+			<AuthForm
+				onSumbit={(e) => login(e)}
+				extras={() => {
+					return (
+						<div className="center mb-3">
+							<div className="text-sm text-gray-300 flex">
+								Don't have an account?{' '}
+								<Link href={'/signup'}>
+									<a className="underline decoration-white ml-1">
+										Sign Up
+									</a>
+								</Link>
 							</div>
 						</div>
-					</div>
-				</div>
-				<ToastContainer
-					position="bottom-right"
-					autoClose={5000}
-					hideProgressBar={false}
-					newestOnTop={false}
-					closeOnClick
-					rtl={false}
+					);
+				}}
+			>
+				<InputField
+					type="email"
+					placeholder="Enter Your Email"
+					onChange={(e) => setEmail(e.target.value)}
+					value={email}
+					className="mb-0.5"
 				/>
-			</div>
-		</div>
+
+				<InputField
+					type="password"
+					placeholder="Enter Your Password"
+					onChange={(e) => setPassword(e.target.value)}
+					value={password}
+				/>
+				<button
+					className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 w-80 rounded-sm mb-5"
+					type="submit"
+				>
+					Submit
+				</button>
+			</AuthForm>
+		</AuthLayout>
 	);
 };
 
