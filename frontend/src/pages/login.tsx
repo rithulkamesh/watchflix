@@ -1,6 +1,5 @@
 import React, { FormEvent, useState } from 'react';
-import Image from 'next/image';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import InputField from '../components/inputField';
 import { NextRouter, useRouter } from 'next/router';
 import * as yup from 'yup';
@@ -8,6 +7,7 @@ import Loader from '../components/loading';
 import Link from 'next/link';
 import AuthLayout from '../layouts/auth';
 import AuthForm from '../components/authForm';
+import { validateLogin } from '../utils/fetch';
 
 const schema = yup.object().shape({
 	email: yup.string().email().required(),
@@ -42,28 +42,16 @@ const Login: React.FC = () => {
 			});
 	};
 
-	const validate = async () => {
-		fetch('http://localhost:3001/auth/validate', {
-			method: 'POST',
-			credentials: 'include'
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					router.push('/');
-				} else {
-					setLoading(false);
-				}
-			})
-			.catch(() => {
-				router.push('/login');
-			});
-	};
-
 	if (loading) {
 		if (!validated) {
-			validate();
-			setValidated(true);
+			validateLogin(
+				() => {
+					router.push('/');
+				},
+				() => {
+					setLoading(false);
+				}
+			).then(() => setValidated(true));
 		}
 		return <Loader />;
 	}

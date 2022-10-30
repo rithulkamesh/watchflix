@@ -7,6 +7,8 @@ import Router from 'next/router';
 import * as yup from 'yup';
 import Loader from '../components/loading';
 import Link from 'next/link';
+import { validateLogin } from '../utils/fetch';
+import { useRouter } from 'next/router';
 
 const schema = yup.object().shape({
 	email: yup.string().email().required(),
@@ -27,6 +29,7 @@ const Signup: React.FC = () => {
 	const [passConf, setPassConf] = useState('');
 	const [loading, setLoading] = useState(true);
 	const [validated, setValidated] = useState(false);
+	const router = useRouter();
 
 	const login = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -60,28 +63,17 @@ const Signup: React.FC = () => {
 			});
 	};
 
-	const validate = async () => {
-		fetch('http://localhost:3001/auth/validate', {
-			method: 'POST',
-			credentials: 'include'
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				if (data.status === 200) {
-					Router.push('/');
-				} else {
-					setLoading(false);
-				}
-			})
-			.catch(() => {
-				Router.push('/signup');
-			});
-	};
 
 	if (loading) {
 		if (!validated) {
-			validate();
-			setValidated(true);
+			validateLogin(
+				() => {
+					router.push('/');
+				},
+				() => {
+					setLoading(false);
+				}
+			).then(() => setValidated(true));
 		}
 		return <Loader />;
 	}

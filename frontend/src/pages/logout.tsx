@@ -2,41 +2,30 @@ import React, { FormEvent, useState } from 'react';
 import Image from 'next/image';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Router from 'next/router';
+import {useRouter} from 'next/router';
 import Loader from '../components/loading';
+import { fetchFromAPI, validateLogin } from '../utils/fetch';
 
 const Logout: React.FC = () => {
 	const widthAndHeight = 60;
 
 	const [loading, setLoading] = useState(true);
 	const [validated, setValidated] = useState(false);
+	const router = useRouter();
 
-	const validate = async () => {
-		fetch('http://localhost:3001/auth/validate', {
-			method: 'POST',
-			credentials: 'include'
-		})
-			.then((res) => res.json())
-			.then(async (data) => {
-				if (data.status === 200) {
-					setLoading(false);
-					await fetch('http://localhost:3001/auth/logout', {
-						method: 'POST',
-						credentials: 'include'
-					});
-					await Router.push('/login');
-				} else {
-					setLoading(false);
-				}
-			})
-			.catch(() => {
-				Router.push('/logout');
-			});
-	};
+	
 
 	if (loading) {
 		if (!validated) {
-			validate();
+			validateLogin(
+				() => {
+					fetchFromAPI("/auth/logout", "POST");
+					router.push('/login');
+				},
+				() => {
+					setLoading(false);
+				}
+			).then(() => setValidated(true));
 			setValidated(true);
 		}
 		return <Loader />;
