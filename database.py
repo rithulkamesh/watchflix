@@ -23,5 +23,10 @@ class Movie(db.Model):
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text(), nullable=False)
     trailer = db.Column(db.String(200), nullable=False)
+    poster = db.Column(db.String(200), nullable=True)
+
+class Metadata(db.Model):
+    key = db.Column(db.String(200), primary_key=True)
+    value = db.Column(db.String(200), nullable=False)
 
 db.create_all()
