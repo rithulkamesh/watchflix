@@ -15,7 +15,7 @@ School project lmao
 - [x] SQL - Add/Update/Delete
 - [x] Mail Sender Module w/ Sendgrid
 - [x] Logging
-- [ ] Add Movies (CSV)
+- [x] Add Movies (CSV)
 - [ ] Fix Validation in Frontend && convert to formik
 - [ ] Admin panel to add shows
 - [ ] Sending and resetting password from frontend
