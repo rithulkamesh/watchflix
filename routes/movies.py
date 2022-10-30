@@ -81,7 +81,7 @@ def delete_movie(id):
 
 # Get random movies
 @movie.route("/random/<count>")
-def get_random_movies(count=1):
+def get_random_movies(count):
     movies = Movie.query.all()
     if len(movies) == 0:
         return send("No movies found", 404)
@@ -97,3 +97,4 @@ def get_random_movies(count=1):
             } for movie in movies[:int(count) if int(count) <= len(movies) else len(movies)]
         ]
     }
+    del movies
