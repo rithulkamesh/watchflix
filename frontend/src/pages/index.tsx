@@ -37,12 +37,9 @@ const Home: React.FC = () => {
 	}
 	return (
 		<HomeLayout title={`Welcome, ${user}!`}>
-
 			<div className="pl-[3em] text-[35px] font-light">
 				Here are some random picks for you!
 			</div>
-
-
 		</HomeLayout>
 	);
 };
