@@ -87,7 +87,7 @@ def get_random_movies(count):
         return send("No movies found", 404)
     import random
     random.shuffle(movies)
-    return {
+    movies =  {
         "movies" : [
             {
                 "name" : movie.name,
@@ -97,4 +97,4 @@ def get_random_movies(count):
             } for movie in movies[:int(count) if int(count) <= len(movies) else len(movies)]
         ]
     }
-    del movies
+    return send(movies, 200)
