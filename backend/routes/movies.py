@@ -26,7 +26,7 @@ def create_movie():
         return send("You are not an admin.", 401)
     body = request.get_json()
 
-    if not {"name", "desc", "trailer"}.issubset(body.keys()):
+    if not {"title", "description", "trailer", "poster"}.issubset(body.keys()):
         return send("Insufficient Arguments", 400)
     
     uuid = str(uuid4())
@@ -36,7 +36,7 @@ def create_movie():
             break
         uuid = str(uuid4())
     
-    movie = Movie(id=uuid, name=body["name"], description=body["desc"], trailer=body["trailer"])
+    movie = Movie(id=uuid, name=body["title"], description=body["description"], trailer=body["trailer"], poster=body["poster"])
     db.session.add(movie)
     db.session.commit()
     return "OK"

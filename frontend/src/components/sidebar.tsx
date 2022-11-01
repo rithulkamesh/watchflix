@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaTv } from 'react-icons/fa';
 import { FiLogOut, FiHome } from 'react-icons/fi';
 
 const SideBar: React.FC = () => {
