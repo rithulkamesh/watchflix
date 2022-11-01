@@ -13,26 +13,22 @@ jwt = JWT()
 auth = Blueprint("auth", __name__)
 
 def insert_reset(email):
-    l=[]
     with open('reset.csv','a+',newline='') as f:
-        l.append(email)
-        s=uuid4()
-        l.append(s)
-        w=csv.writer(f)
-        w.writerow(l)
-    return s
+        s = uuid4()
+        csv.writer(f).writerow([email, s])
+    return True
 
-def exists_in_reset(token):
+def exists_in_reset(arg, type="token"):
     with open('reset.csv','r',newline='') as f:
         r=csv.reader(f)
         for i in r:
-            if i[1]==token:
-                return i
-        return None
+            if i[1 if type=="token" else 0]==arg:
+                return True
+        return False
 
 def delete_reset(email):
     with open('reset.csv','a+',newline='') as f:
-        with open('temporary.csv','r+',newline='') as t:
+        with open('temporary.csv','a+',newline='') as t:
             w=csv.writer(f)
             r=csv.reader(f)
             found=0
@@ -46,8 +42,6 @@ def delete_reset(email):
         os.rename('temporary.csv','reset.csv')
     else:
         print('record not found')
-
-
 
 # Region Utilities
 def send(text, status):
@@ -201,44 +195,40 @@ def verify_email(code):
         return response
 # endregion verify
 
-# Region Forgot Password - Send
+# Region Forgot Password
 @auth.route("/forgot", methods=["POST"])
 def forgot():
     body = request.get_json()
-    """ if email is not entered """
+    if request.args.get("token"):
+        if not {'newpassword'}.issubset(body.keys()):
+            return send("Insufficient arguments", 400)
+        forgot = exists_in_reset(request.args.get("token"), type="token")
+        if not forgot:
+            return send("Invalid Code", 404)
+        user = User.query.filter(User.email == forgot[0]).first()
+        if not user:
+            return send("Email does not exist", 400)
+        else:
+            user.password = hashpw(body["newpassword"])
+            delete_reset(email=forgot[0])
+            db.session.commit()
+            return send("Successfully Reset!", 200)
+
     if not {'email'}.issubset(body.keys()):
         return send("Insufficient arguments", 400)
-    """in case email is not valid"""
     if not check_email(body["email"]):
         return send("Invalid Email", 400)
-
     user = User.query.filter(User.email == body["email"]).first()
-    """if email doesnt exist in the user table"""
     if not user:
         return send("Email does not exist", 400)
     else:
-        forgot_id = insert_reset(body["email"])
-        # mail.send_reset(body["email"], user.name.split()[0], forgot_id)
-
-        return send("Successfully Sent!", 200)
-# endregion
-
-# Region Forgot Password - Reset
-@auth.route("/forgot/<token>", methods=["POST"])
-def reset(token):
-    body = request.get_json()
-    if not {'newpassword'}.issubset(body.keys()):
-        return send("Insufficient arguments", 400)
-    forgot = exists_in_reset(token)
-    if not forgot:
-        return send("Invalid Code", 400)
-    user = User.query.filter(User.email == forgot[0]).first()
-    if not user:
-        return send("Email does not exist", 400)
-    else:
-        user.password = hashpw(body["newpassword"])
-        db.session.commit()
-        return send("Successfully Reset!", 200)
+        if exists_in_reset(body["email"], type="email"):
+            print("hi@rithul.dev")
+            return send("Already Sent!", 402)
+        else:
+            forgot_id = insert_reset(body["email"])
+            return send("Successfully Sent!", 200)
+            #mail.send_reset(body["email"], user.name.split()[0], forgot_id)
 # endregion
 
 # Region Validate Login
