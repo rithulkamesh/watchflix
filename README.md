@@ -18,6 +18,4 @@ School project lmao
 - [x] Add Movies (CSV)
 - [x] Fix Validation in Frontend && convert to formik
 - [x] Admin panel to add shows
-- [ ] Sending and resetting password from frontend
-- [ ] Cleanup and Refactors
-- [ ] Animations
+- [x] Sending and resetting password from frontend

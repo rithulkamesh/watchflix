@@ -10,7 +10,7 @@ except Exception as e:
 def send_verify(email,name, verifyCode):
     mail = ""
     with open(os.path.join(os.getcwd(), "views", "verify.html")) as f:
-        mail=f.read().replace(r"{{verifyLink}}", f"http://localhost:3000/verify?code={verifyCode}").replace("{{name}}", name)
+        mail=f.read().replace(r"{{url}}", f"http://localhost:3000/verify?code={verifyCode}").replace("{{name}}", name)
 
     from_email = Email("watchflix@rithul.dev")
     to_email = To(email)
@@ -22,7 +22,7 @@ def send_verify(email,name, verifyCode):
 def send_forgot(email, name, resetCode):
     mail = ""
     with open(os.path.join(os.getcwd(), "views", "forgot.html")) as f:
-        mail=f.read().replace(r"{{resetLink}}", f"http://localhost:3000/reset?code={resetCode}").replace("{{name}}", name)
+        mail=f.read().replace(r"{{url}}", f"http://localhost:3000/reset?code={resetCode}").replace("{{name}}", name)
     from_email = Email("watchflix@rithul.dev")
     to_email = To(email)
     subject = "Reset your password"

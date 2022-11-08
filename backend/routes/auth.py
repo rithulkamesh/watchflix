@@ -9,7 +9,6 @@ from jwt import JWT, jwk_from_pem
 from flask import request, jsonify, Blueprint, Response,json
 
 jwt = JWT()
-
 auth = Blueprint("auth", __name__)
 
 def insert_reset(email):
@@ -23,25 +22,15 @@ def exists_in_reset(arg, type="token"):
         r=csv.reader(f)
         for i in r:
             if i[1 if type=="token" else 0]==arg:
-                return True
+                return i
         return False
 
 def delete_reset(email):
-    with open('reset.csv','a+',newline='') as f:
-        with open('temporary.csv','a+',newline='') as t:
-            w=csv.writer(f)
-            r=csv.reader(f)
-            found=0
-            for i in r:
-                if i[0]==email:
-                    found=1
-                else:
-                    w.writerow(i)
-    if found==1:
-        os.remove('reset.csv')
-        os.rename('temporary.csv','reset.csv')
-    else:
-        print('record not found')
+    with open('reset.csv','r',newline='') as f:
+        with open('temporary.csv','w',newline='') as t:
+            csv.writer(t).writerows([i for i in csv.reader(f) if i[0]!=email])
+    os.remove('reset.csv')
+    os.rename('temporary.csv','reset.csv')
 
 # Region Utilities
 def send(text, status):
@@ -200,19 +189,20 @@ def verify_email(code):
 def forgot():
     body = request.get_json()
     if request.args.get("token"):
+        token = request.args.get("token")
         if not {'newpassword'}.issubset(body.keys()):
             return send("Insufficient arguments", 400)
         forgot = exists_in_reset(request.args.get("token"), type="token")
         if not forgot:
             return send("Invalid Code", 404)
-        user = User.query.filter(User.email == forgot[0]).first()
-        if not user:
-            return send("Email does not exist", 400)
         else:
+            user = User.query.filter(User.email==forgot[0]).first()
             user.password = hashpw(body["newpassword"])
+            response = send("Successfully Changed Password!", 200)
+            response.set_cookie('watchflixlogin', '', expires=0)
             delete_reset(email=forgot[0])
             db.session.commit()
-            return send("Successfully Reset!", 200)
+            return response
 
     if not {'email'}.issubset(body.keys()):
         return send("Insufficient arguments", 400)
@@ -222,13 +212,9 @@ def forgot():
     if not user:
         return send("Email does not exist", 400)
     else:
-        if exists_in_reset(body["email"], type="email"):
-            print("hi@rithul.dev")
-            return send("Already Sent!", 402)
-        else:
-            forgot_id = insert_reset(body["email"])
-            return send("Successfully Sent!", 200)
-            #mail.send_reset(body["email"], user.name.split()[0], forgot_id)
+        forgot_id = insert_reset(body["email"])
+        return send("Successfully Sent!", 200)
+        mail.send_forgot(body["email"], user.name.split()[0], forgot_id)
 # endregion
 
 # Region Validate Login

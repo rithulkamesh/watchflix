@@ -1,10 +1,10 @@
 import React, { FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
-import HomeLayout from '../../layouts/home';
-import InputField from '../../components/inputField';
+import HomeLayout from '../layouts/home';
+import InputField from '../components/inputField';
 import { toast } from 'react-toastify';
-import { validateLogin } from '../../utils/fetch';
-import Loader from '../../components/loading';
+import { validateLogin } from '../utils/fetch';
+import Loader from '../components/loading';
 type Props = {};
 
 const index: React.FC = (props: Props) => {

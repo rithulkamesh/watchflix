@@ -14,6 +14,7 @@ cors = CORS(app, resource={
 }, supports_credentials=True)
 
 app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['CORS_HEADERS'] = 'ACcess-Control-Allow-Origin'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 
 logging.basicConfig()
@@ -27,11 +28,10 @@ from database import *
 
 logging.getLogger('sqlalchemy').setLevel(logging.ERROR)
 
-if not os._exists("reset.csv"):
-    with open('reset.csv','w+',newline='') as f:
-        l=['Email','UUID']
-        w=csv.writer(f)
-        w.writerow(l)
+if not os.path.exists("reset.csv"):
+    with open("reset.csv", "w") as f:
+        pass
+
 
 from routes.auth import auth
 from routes.movies import movie
