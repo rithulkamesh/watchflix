@@ -16,8 +16,8 @@ School project lmao
 - [x] Mail Sender Module w/ Sendgrid
 - [x] Logging
 - [x] Add Movies (CSV)
-- [ ] Fix Validation in Frontend && convert to formik
-- [ ] Admin panel to add shows
+- [x] Fix Validation in Frontend && convert to formik
+- [x] Admin panel to add shows
 - [ ] Sending and resetting password from frontend
 - [ ] Cleanup and Refactors
 - [ ] Animations

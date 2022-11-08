@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import HomeLayout from '../../layouts/home';
 import InputField from '../../components/inputField';
 import { toast } from 'react-toastify';
+import { validateLogin } from '../../utils/fetch';
+import Loader from '../../components/loading';
 type Props = {};
 
 const index: React.FC = (props: Props) => {
@@ -11,6 +13,16 @@ const index: React.FC = (props: Props) => {
 	const [description, setDescription] = useState('');
 	const [poster, setPoster] = useState('');
 	const [trailer, setTrailer] = useState('');
+	const [loading, setLoading] = useState(false);
+
+	validateLogin(
+		() => {
+			setLoading(false);
+		},
+		() => {
+			router.push('/login');
+		}
+	);
 
 	fetch('http://localhost:3001/auth/user', {
 		method: 'GET',
@@ -39,19 +51,21 @@ const index: React.FC = (props: Props) => {
 				poster,
 				trailer
 			})
-		})
-			.then((data) => {
-				if (data.status === 200) {
-					// Clear and Toast
-					setTitle('');
-					setDescription('');
-					setPoster('');
-					setTrailer('');
+		}).then((data) => {
+			if (data.status === 200) {
+				// Clear and Toast
+				setTitle('');
+				setDescription('');
+				setPoster('');
+				setTrailer('');
 
-					toast('Movie Added', { theme: 'dark' });
-				}
-			});
+				toast('Movie Added', { theme: 'dark' });
+			}
+		});
 	};
+
+	if (loading) return <Loader />;
+
 	return (
 		<HomeLayout title="Add a movie">
 			<div className="flex flex-col items-center justify-center">
